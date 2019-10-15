@@ -25,12 +25,46 @@
                 <i class="iconfont icon-key"></i>
                 <input type="text" class="input_txt" placeholder="邮箱/手机号">
                 <input type="password" class="input_pass" placeholder="密码">
-                <input type="submit" class="input_sub" value="登 录">
+                <!-- <input type="submit" class="input_sub" value="登 录"> -->
+                <input type="button" class="input_sub" value="登 录">
             </form>
         </div>
 
     </div> 
-
+<script>
+/*
+结构的修改:
+登录按钮时submit功能的,我们希望使用ajax所以更改为普通按钮.
+或者e.preventDefault();jQuery阻止默认行为
+功能简介
+*/
+// 1.1給按钮添加点击事件
+$('.input_sub').on('click',function(){
+// 1.2获取用户名和密码进行检测和判断
+    var user_name = $('.input_txt').val();
+    var password = $('.input_pass').val();
+    if(user_name.trim() === ''||password.trim()=== ''){
+        alert('请完整填写表单');
+        return;
+    }
+    //发送请求
+    $.ajax({
+    type:'post',
+    url:userLoginPort,
+    data:{
+        user_name:user_name,
+        password:password,
+    },success:function(res){
+        //根据服务端响应状态进行对应操作
+        if(res.code===200){
+            location.href = './index.html'
+        }else{
+            alert('用户名或密码错误')
+        }
+    }
+    })
+})
+</script>
 </body>
 
 </html>
