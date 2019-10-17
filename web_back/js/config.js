@@ -4,3 +4,5 @@ var baseurl = 'http://localhost:8000'
 var userLoginPort = baseurl+'/admin/login';
 var userLogoutPort = baseurl+'/admin/logout';
 var userInfoPort = baseurl+'/admin/getuser';
+var userInfoGetPort = baseurl + '/admin/userinfo_get'; // 用户详细信息获取接口
+var userInfoEditPort = baseurl + '/admin/userinfo_edit'; // 用户信息编辑接口

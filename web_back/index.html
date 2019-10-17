@@ -44,7 +44,7 @@
         <div class="user_center_link">
             <a href="user.html" onclick="setMenu(3,0)" target="main_frame">个人中心</a>
             <img src="images/2.jpg" alt="person">
-            <a href="#"><i class="iconfont icon-tuichu"></i> 退出</a>
+            <a href="#" id="logout"><i class="iconfont icon-tuichu"></i> 退出</a>
         </div>
     </div>
 
@@ -103,6 +103,65 @@
         }
 
     </script>
+<script src="./js/bootstrap/js/bootstrap.min.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/user.js"></script>
+    <!-- 进行退出确认的模态框Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">提示信息!~</h4>
+        </div>
+        <div class="modal-body">
+          是否确认退出呢？~
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="logoutYes">确认退出</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 分割线 -->
+<script>
+    // 退出功能：
+    // 1 给退出按钮设置点击事件
+    $('#logout').on('click', function () {
+      // 1.1 设置模态框显示
+      $('#myModal').modal('show');
+    });
+    // 2 确认退出按钮的点击事件
+    $('#logoutYes').on('click', function () {
+      // 2.1 发送请求，进行退出操作
+      user.logout({
+        callback: function (res) {
+          // 2.2 退出完成，跳转到login.html即可
+          if (res.code === 200) {
+            location.href = './login.html';
+          }
+        }
+      });
+    });
 
+
+    // 用户简单信息获取功能
+    // 1 页面加载中直接发送请求，获取用户信息
+    user.getInfo({
+      callback: function (res) {
+        if (res.code === 200) {
+          // 2 将获取的数据渲染到页面中
+          var data = res.data;
+          // 左侧的用户信息
+          $('.user_info img').prop('src', data.user_pic)
+            .next().text(data.nickname);
+          // 右侧顶部的用户头像
+          $('.user_center_link img').prop('src', data.user_pic);
+        }
+      }
+    });
+</script>
 </body>
 </html>
