@@ -24,17 +24,17 @@
                     <form class="form-inline">
                         <select id="selCategory" name="" class="form-control input-sm">
                             <option>所有分类</option>
-                            <option>未分类</option>
+                            <!-- <option>未分类</option>
                             <option>奇趣事</option>
                             <option>会生活</option>
-                            <option>爱旅行</option>
+                            <option>爱旅行</option> -->
                         </select>
                         <select id="selStatus" name="" class="form-control input-sm">
                             <option>所有状态</option>
-                            <option value="drafted">草稿</option>
-                            <option value="published">已发布</option>
+                            <option value="草稿">草稿</option>
+                            <option value="已发布">已发布</option>
                         </select>
-                        <button id="btnSearch" class="btn btn-default btn-sm">筛选</button>
+                        <button id="btnSearch" class="btn btn-default btn-sm" type="button">筛选</button>
                     </form>
                 </div>
                 <div class="col-xs-6">
@@ -53,9 +53,9 @@
                         <th class="text-center" width="100">操作</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tbody">
 
-
+<!-- 
 
                     <tr>
                         
@@ -245,7 +245,7 @@
                         </td>
                     </tr>
 
-
+ -->
                 </tbody>
             </table>
 
@@ -274,7 +274,74 @@
             window.parent.setMenu(1,1);
         })
     </script>
+    <script src="./js/config.js"></script>
+    <script src="./js/article.js"></script>
+    <script src="./js/template-web.js"></script>
+    <script type="text/html" id="article">
+        {{each data v}}
+        <tr>
+          <td>{{v.title}}</td>
+          <td>{{v.author}}</td>
+          <td>{{v.type}}</td>
+          <td class="text-center">{{v.date}}</td>
+          <td class="text-center">{{v.state}}</td>
+          <td class="text-center">
+            <a href="post-edit.html?id=995" class="btn btn-default btn-xs">编辑</a>
+            <a href="javascript:deleteTr( 995 );" class="btn btn-danger btn-xs">删除</a>
+          </td>
+        </tr>
+        {{/each}}
+      </script>
+      <script type="text/html" id="category">
+        {{each data v}}
+          <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+      </script>
+    <!-- 以上为模板 -->
+    <script>
+    $.ajax({
+        type:'get',
+        url:'http://localhost:8000/admin/search',
+        success:function(res){
+            if(res.code === 200){
+            var htmlstr = template('article',res);
+            $('#tbody').html(htmlstr);
+            }
+        }
+    });
 
+    //以下把分类数据渲染一下下
+    article.getCate({
+        callback:function(res){
+        if(res.code === 200){
+            var htmlstr = template('category',res);
+            $('#selCategory').append(htmlstr);
+        }
+        },
+    });
+    //筛选按钮
+    $('#btnSearch').on('click',function(e){
+        e.preventDefault();
+        getArticle();
+    })
+    // 封装一个函数用来进行数据请求和结构生成
+    function getArticle(){
+        $.ajax({
+        type:'get',
+        url:'http://localhost:8000/admin/search',
+        data:{
+            type:$('#selCategory').val(),
+            state:$('#selStatus').val(),
+        },
+        success:function(res){
+            if(res.code === 200){
+            var htmlstr = template('article',res);
+            $('#tbody').html(htmlstr);
+            }
+        }
+    });
+    }
+    </script>
 </body>
 
 </html>
