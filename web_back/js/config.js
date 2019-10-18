@@ -6,3 +6,7 @@ var userLogoutPort = baseurl+'/admin/logout';
 var userInfoPort = baseurl+'/admin/getuser';
 var userInfoGetPort = baseurl + '/admin/userinfo_get'; // 用户详细信息获取接口
 var userInfoEditPort = baseurl + '/admin/userinfo_edit'; // 用户信息编辑接口
+var ARTICLE_GET = baseurl + '/admin/category_search';
+var ARTICLE_ADD = baseurl + '/admin/category_add';
+var ARTICLE_EDIT = baseurl + '/admin/category_edit';
+var ARTICLE_DEL = baseurl + '/admin/category_delete';
