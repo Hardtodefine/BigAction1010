@@ -23,14 +23,14 @@
                 <div class="col-xs-6">
                     <form class="form-inline">
                         <select id="selCategory" name="" class="form-control input-sm">
-                            <option>所有分类</option>
+                            <option value="">所有分类</option>
                             <!-- <option>未分类</option>
                             <option>奇趣事</option>
                             <option>会生活</option>
                             <option>爱旅行</option> -->
                         </select>
                         <select id="selStatus" name="" class="form-control input-sm">
-                            <option>所有状态</option>
+                            <option value="">所有状态</option>
                             <option value="草稿">草稿</option>
                             <option value="已发布">已发布</option>
                         </select>
@@ -250,7 +250,7 @@
             </table>
 
             <div class="row text-center">
-            <ul class="pagination pagination-sm">
+            <ul class="pagination pagination-sm" id="fenYe">
                 <li class="page-item first disabled"><a href="#" class="page-link">首页</a></li>
                 <li class="page-item prev disabled"><a href="#" class="page-link">上一页</a></li>
                 <li class="page-item active"><a href="#" class="page-link">1</a></li>
@@ -277,6 +277,7 @@
     <script src="./js/config.js"></script>
     <script src="./js/article.js"></script>
     <script src="./js/template-web.js"></script>
+    <script src="./js/jquery.twbsPagination.js"></script>
     <script type="text/html" id="article">
         {{each data v}}
         <tr>
@@ -299,17 +300,9 @@
       </script>
     <!-- 以上为模板 -->
     <script>
-    $.ajax({
-        type:'get',
-        url:'http://localhost:8000/admin/search',
-        success:function(res){
-            if(res.code === 200){
-            var htmlstr = template('article',res);
-            $('#tbody').html(htmlstr);
-            }
-        }
-    });
-
+    var mytotalpage
+    var mypage = 1
+    getArticle();
     //以下把分类数据渲染一下下
     article.getCate({
         callback:function(res){
@@ -322,6 +315,7 @@
     //筛选按钮
     $('#btnSearch').on('click',function(e){
         e.preventDefault();
+        $('.first').click();
         getArticle();
     })
     // 封装一个函数用来进行数据请求和结构生成
@@ -332,15 +326,40 @@
         data:{
             type:$('#selCategory').val(),
             state:$('#selStatus').val(),
+            page:mypage,
         },
         success:function(res){
+            console.log(res);
             if(res.code === 200){
             var htmlstr = template('article',res);
             $('#tbody').html(htmlstr);
-            }
+            //分页功能
+            var totalPages = res.totalPage;
+            if(mytotalpage === totalPages){
+                return
+            };
+            mytotalpage = totalPages
+            $('#fenYe').twbsPagination('destroy');
+            $('#fenYe').twbsPagination({
+              // 总页数 totalPages，应当从服务端的响应内容中获取
+              totalPages: totalPages,
+              visiblePages: 7, // 当前一共显示几个页码
+              first: '首页',
+              last: '尾页',
+              prev: '上一页',
+              next: '下一页',
+              onPageClick:function(event,page){
+                mypage = page;
+                getArticle();
+                // console.log(page);
+              }
+            });
+        }
         }
     });
     }
+    //分割线
+    
     </script>
 </body>
 
